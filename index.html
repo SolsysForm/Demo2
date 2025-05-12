@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Client</title>
+    <style>
+        body {
+            font-family: Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            background-color: #fffcfc;
+            padding-top: 30px;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        .logo {
+            all: unset;
+            width: 450px !important;
+            max-width: 100%;
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            height: auto;
+            margin-bottom: 10px;
+            transform: translateX(-50%);
+        }
+
+        p {
+            line-height: 1.8;
+        }
+
+        input,
+        textarea {
+            width: 310px;
+            max-width: 100%;
+            height: 40px;
+            font-size: 1em;
+            padding: 8px 8px 8px 15px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .submit-button {
+            padding: 10px;
+            background: #4854ac;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100px;
+            height: 45px;
+            font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-button:hover {
+            background: #383c9c;
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .reset-button {
+            padding: 10px;
+            background: #e8e4e4;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100px;
+            height: 45px;
+            font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .reset-button:hover {
+            background: #d8d4d4;
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .submit-button,
+        .reset-button {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .error {
+            color: red;
+            font-size: 0.8em;
+        }
+        .confirmation {
+            display: none;
+            color: green;
+            font-size: 1em;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="logo-bruce-field-bleu-fond-blanc-epais-2.png" alt="Mon Logo" class="Logo" style="width: 550px; height: auto;">
+    <p style=" text-align: center;">
+    <span style="font-size: 1.3em;">Bienvenue !</span><br>
+    Inscrivez-vous ici pour bénéficier de nos <br> offres exclusives.
+    </p>
+
+
+    <form id="clientForm">
+        <input type="text" id="Lastname" placeholder="NOM *" required>
+        <span class="error" id="LastnameError"></span>
+
+        <input type="text" id="Firstname" placeholder="Prénom *" required>
+        <span class="error" id="FirstnameError"></span>
+
+        <input type="text" id="birthdate" placeholder="Date de naissance (jj/mm/aaaa)">
+        <span class="error" id="birthdateError"></span>
+
+        <input type="email" id="email" placeholder="Email">
+        <span class="error" id="emailError"></span>
+
+        <input type="tel" id="phone" placeholder="Mobile *" required pattern="[0-9]{10}">
+        <span class="error" id="phoneError"></span>
+
+        <input type="text" id="PostalCode" placeholder="Code Postal">
+        <span class="error" id="PostalCodeError"></span>
+
+        <div class="button-group">
+            <button type="submit" class="submit-button">Valider</button>
+            <button type="reset" class="reset-button">Annuler</button>
+        </div>
+
+        <div id="confirmationMessage" class="confirmation">
+            Formulaire envoyé avec succès !
+        </div>
+
+
+    </form>
+    <script>
+        document.getElementById("clientForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+    
+            const Lastname = document.getElementById("Lastname").value.trim();
+            const Firstname = document.getElementById("Firstname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const PostalCode = document.getElementById("PostalCode").value.trim();
+            const birthdate = document.getElementById("birthdate").value.trim();
+    
+            let valid = true;
+    
+            // Réinitialiser les messages d'erreur
+            document.getElementById("LastnameError").textContent = Lastname ? "" : "Nom requis";
+            document.getElementById("FirstnameError").textContent = Firstname ? "" : "Prénom requis";
+            document.getElementById("phoneError").textContent = phone.match(/^[0-9]{10}$/) ? "" : "Numéro invalide";
+    
+            // Email
+            let emailValid = true;
+            if (email !== "" && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                document.getElementById("emailError").textContent = "Email invalide";
+                emailValid = false;
+            } else {
+                document.getElementById("emailError").textContent = "";
+            }
+    
+            // Code postal : optionnel mais doit être 5 chiffres s’il est saisi
+            let codePostal = "";
+            if (PostalCode !== "") {
+                if (/^\d{5}$/.test(PostalCode)) {
+                    document.getElementById("PostalCodeError").textContent = "";
+                    codePostal = PostalCode;
+                } else {
+                    document.getElementById("PostalCodeError").textContent = "Code postal invalide";
+                    valid = false;
+                }
+            } else {
+                document.getElementById("PostalCodeError").textContent = "";
+            }
+    
+            // Date de naissance : optionnelle mais doit être au format jj/mm/aaaa
+            let moisNaiss = "";
+            let anneeNaiss = "";
+    
+            if (birthdate !== "") {
+                const birthMatch = birthdate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                if (birthMatch) {
+                    const day = parseInt(birthMatch[1], 10);
+                    const month = parseInt(birthMatch[2], 10);
+                    const year = parseInt(birthMatch[3], 10);
+    
+                    const dateObj = new Date(year, month - 1, day);
+    
+                    if (
+                        dateObj.getFullYear() === year &&
+                        dateObj.getMonth() === month - 1 &&
+                        dateObj.getDate() === day
+                    ) {
+                        document.getElementById("birthdateError").textContent = "";
+                        moisNaiss = birthMatch[2] + birthMatch[1]; // mmjj
+                        anneeNaiss = birthMatch[3];
+                    } else {
+                        document.getElementById("birthdateError").textContent = "Date invalide";
+                        valid = false;
+                    }
+                } else {
+                    document.getElementById("birthdateError").textContent = "Format attendu : jj/mm/aaaa";
+                    valid = false;
+                }
+            } else {
+                document.getElementById("birthdateError").textContent = "";
+            }
+    
+            // Validation globale
+            valid = valid && Lastname && Firstname && phone.match(/^[0-9]{10}$/) && emailValid;
+    
+            if (valid) {
+                const idmag = 1034;
+                const url = `https://solsysdemoweb.azurewebsites.net/InsertFidelmobdn.php?nom=${encodeURIComponent(Lastname)}&prenom=${encodeURIComponent(Firstname)}&mobile=${encodeURIComponent(phone)}&optInSMS=1&codePostal=${encodeURIComponent(codePostal)}&moisNaiss=${encodeURIComponent(moisNaiss)}&anneeNaiss=${encodeURIComponent(anneeNaiss)}`;
+    
+                fetch(url, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                }).then(() => {
+                    const messageDiv = document.getElementById("confirmationMessage");
+                    messageDiv.style.display = "block";
+    
+                    setTimeout(() => {
+                        messageDiv.style.display = "none";
+                        document.getElementById("clientForm").reset();
+                    }, 5000);
+                }).catch(error => {
+                    console.error("Erreur lors de l'envoi du formulaire :", error);
+                });
+            }
+        });
+    </script>
+
+    <footer style="text-align: center; margin-top: 50px; font-size: 0.7em; color: #555;">
+        <p> Copyright &copy; <a href="https://www.solsys-info.com" target="_blank"
+                style="text-decoration: none;">Solsys</a> 2025.</p>
+    </footer>
+
+</body>
+
+</html>
